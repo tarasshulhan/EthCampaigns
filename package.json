@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "build": "next build",
+    "start": "next start -H 0.0.0.0 -p ${PORT:-8080}"
   },
   "author": "",
   "license": "ISC",
