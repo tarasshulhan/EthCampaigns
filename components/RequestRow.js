@@ -1,99 +1,96 @@
-import React, { Component } from "react"
-import { Table, Button, Message } from "semantic-ui-react"
+import React, { useState } from "react"
+import { Table, Button } from "semantic-ui-react"
 import web3 from "../ethereum/web3"
 import Campaign from "../ethereum/campaign"
-import { Router } from "../routes"
+import { useRouter } from "next/router"
 
-class RequestRow extends Component {
-  state = {
-    loadingApprove: false,
-    loadingFinalize: false,
-  }
+const RequestRow = (props) => {
+  const [loadingApprove, setLoadingApprove] = useState(false)
+  const [loadingFinalize, setLoadingFinalize] = useState(false)
+  const router = useRouter()
 
-  onApprove = async (event) => {
+  const onApprove = async (event) => {
     event.preventDefault()
 
-    this.setState({ loadingApprove: true })
+    setLoadingApprove(true)
 
     //sets error message in parent component
-    this.props.getError("")
+    props.setError("")
 
     try {
-      const campaign = Campaign(this.props.address)
+      const campaign = Campaign(props.address)
       const accounts = await web3.eth.getAccounts()
-      await campaign.methods.approveRequest(this.props.id).send({
+      await campaign.methods.approveRequest(props.id).send({
         from: accounts[0],
       })
-      Router.replaceRoute(`/campaigns/${this.props.address}/requests`)
+      router.replace(`/campaigns/${props.address}/requests`)
     } catch (err) {
-      this.props.getError(err.message)
+      props.setError(err.message)
     }
-    this.setState({ loadingApprove: false })
+    setLoadingApprove(false)
   }
 
-  onFinalize = async (event) => {
+  const onFinalize = async (event) => {
     event.preventDefault()
 
-    this.setState({ loadingFinalize: true })
-    this.props.getError("")
+    setLoadingFinalize(true)
+    props.setError("")
 
     try {
-      const campaign = Campaign(this.props.address)
+      const campaign = Campaign(props.address)
       const accounts = await web3.eth.getAccounts()
-      await campaign.methods.finalizeRequest(this.props.id).send({
+      await campaign.methods.finalizeRequest(props.id).send({
         from: accounts[0],
       })
-      Router.replaceRoute(`/campaigns/${this.props.address}/requests`)
+      router.replace(`/campaigns/${props.address}/requests`)
     } catch (err) {
-      this.props.getError(err.message)
+      props.setError(err.message)
     }
-    this.setState({ loadingFinalize: false })
+    setLoadingFinalize(false)
   }
 
-  render() {
-    const { Row, Cell } = Table
-    const { id, request, approversCount } = this.props
-    const readyToFinalize = request.approvalCount > approversCount / 2
+  const { Row, Cell } = Table
+  const { id, request, approversCount } = props
+  const readyToFinalize = request.approvalCount > approversCount / 2
 
-    return (
-      <Row
-        disabled={request.complete}
-        positive={readyToFinalize && !request.complete}
-      >
-        <Cell>{id}</Cell>
-        <Cell>{request.description}</Cell>
-        <Cell>{web3.utils.fromWei(request.value, "ether")}</Cell>
-        <Cell>{request.recipient}</Cell>
-        <Cell>
-          {request.approvalCount}/{approversCount}
-        </Cell>
-        <Cell>
-          {request.complete ? null : (
-            <Button
-              loading={this.state.loadingApprove}
-              color="green"
-              basic
-              onClick={this.onApprove}
-            >
-              Approve
-            </Button>
-          )}
-        </Cell>
-        <Cell>
-          {request.complete ? null : (
-            <Button
-              loading={this.state.loadingFinalize}
-              color="blue"
-              basic
-              onClick={this.onFinalize}
-            >
-              Finalize
-            </Button>
-          )}
-        </Cell>
-      </Row>
-    )
-  }
+  return (
+    <Row
+      disabled={request.complete}
+      positive={readyToFinalize && !request.complete}
+    >
+      <Cell>{id}</Cell>
+      <Cell>{request.description}</Cell>
+      <Cell>{web3.utils.fromWei(request.value, "ether")}</Cell>
+      <Cell>{request.recipient}</Cell>
+      <Cell>
+        {request.approvalCount}/{approversCount}
+      </Cell>
+      <Cell>
+        {request.complete ? null : (
+          <Button
+            loading={loadingApprove}
+            color="green"
+            basic
+            onClick={onApprove}
+          >
+            Approve
+          </Button>
+        )}
+      </Cell>
+      <Cell>
+        {request.complete ? null : (
+          <Button
+            loading={loadingFinalize}
+            color="blue"
+            basic
+            onClick={onFinalize}
+          >
+            Finalize
+          </Button>
+        )}
+      </Cell>
+    </Row>
+  )
 }
 
 export default RequestRow

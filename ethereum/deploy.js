@@ -1,11 +1,12 @@
 const HDWalletProvider = require("@truffle/hdwallet-provider")
 const Web3 = require("web3")
 const compiledFactory = require("./build/CampaignFactory.json")
-
-const provider = new HDWalletProvider(
-  "carbon trash grocery fiscal brush art left tube bachelor amazing muscle under",
-  "https://rinkeby.infura.io/v3/9fe88971851d4fb1b8501ed1a22abfbd"
-)
+console.log(process.env.MNEMONIC, process.env.PROVIDER_URL)
+/* to deploy a new instance of the campaign factory contract
+enter the wallet mnemonic and eth network url*/
+const provider = new HDWalletProvider()
+/* wallet mnemonic ,*/
+/* network url e.g. infura*/
 const web3 = new Web3(provider)
 
 const deploy = async () => {

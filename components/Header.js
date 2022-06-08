@@ -1,20 +1,20 @@
 import React from "react"
 import { Menu, Icon } from "semantic-ui-react"
-import { Link } from "../routes"
+import Link from "next/link"
 
 const Header = () => {
   return (
     <Menu style={{ marginTop: "1%" }}>
-      <Link route="/">
+      <Link href="/">
         <a className="item">
           <h4>EthCampaigns</h4>
         </a>
       </Link>
       <Menu.Menu position="right">
-        <Link route="/">
+        <Link href="/">
           <a className="item">Campaigns</a>
         </Link>
-        <Link route="/campaigns/new">
+        <Link href="/campaigns/new">
           <a className="item">
             {" "}
             <Icon name="add circle" />
