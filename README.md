@@ -7,3 +7,5 @@ To start the UI:
 3. "npm install"
 4. "npm run dev"
 5. In your browser, navigate to localhost:3000
+
+Based on "Ethereum and Solidity: The Complete Developer's Guide" by Stephen Grider
